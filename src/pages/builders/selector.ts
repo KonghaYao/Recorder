@@ -115,7 +115,7 @@ export function getBestSelectorForAction(action: Action, library: ScriptType) {
       const selectors = action.selectors;
       // Only supported for playwright, less than 25 characters, and element only has text inside
       const textSelector =
-        library === ScriptType.Playwright &&
+        (library === ScriptType.Playwright || library === ScriptType.Cypress) &&
         selectors?.text?.length != null &&
         selectors?.text?.length < 25 &&
         action.hasOnlyText

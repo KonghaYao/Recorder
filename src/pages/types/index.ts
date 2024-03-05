@@ -82,6 +82,8 @@ class ClickAction extends BaseAction {
 
 class DragAndDropAction extends BaseAction {
   type: ActionType.DragAndDrop;
+  targetSelector?: BaseAction;
+  sourceSelector?: BaseAction;
   sourceX: number;
   sourceY: number;
   targetX: number;

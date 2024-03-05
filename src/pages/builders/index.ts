@@ -43,7 +43,7 @@ type ActionState = {
 export class ActionContext extends BaseAction {
   private readonly action: Action;
 
-  private readonly scriptType: ScriptType;
+  readonly scriptType: ScriptType;
 
   private readonly actionState: ActionState;
 
@@ -195,7 +195,11 @@ export abstract class ScriptBuilder {
     sourceX: number,
     sourceY: number,
     targetX: number,
-    targetY: number
+    targetY: number,
+    ctx: {
+      sourceSelector: string;
+      targetSelector: string;
+    }
   ) => this;
 
   abstract fullScreenshot: () => this;
@@ -275,7 +279,19 @@ export abstract class ScriptBuilder {
           action.sourceX,
           action.sourceY,
           action.targetX,
-          action.targetY
+          action.targetY,
+          {
+            targetSelector:
+              getBestSelectorForAction(
+                action.targetSelector,
+                actionContext.scriptType
+              ) ?? '',
+            sourceSelector:
+              getBestSelectorForAction(
+                action.sourceSelector,
+                actionContext.scriptType
+              ) ?? '',
+          }
         );
         break;
       default:
@@ -608,14 +624,20 @@ ${this.codes.join('')}
 }
 
 export class CypressScriptBuilder extends ScriptBuilder {
+  private cyGetFunction = (selector: string) => {
+    if (selector.startsWith('text=')) {
+      return `cy.getByText('${selector.slice(5)}')`;
+    }
+    return `cy.get('${selector}');`;
+  };
   // Cypress automatically detects and waits for the page to finish loading
   click = (selector: string, causesNavigation: boolean) => {
-    this.pushCodes(`cy.get('${selector}').click();`);
+    this.pushCodes(`${this.cyGetFunction(selector)}.click();`);
     return this;
   };
 
   hover = (selector: string, causesNavigation: boolean) => {
-    this.pushCodes(`cy.get('${selector}').trigger('mouseover');`);
+    this.pushCodes(`${this.cyGetFunction(selector)}.trigger('mouseover');`);
     return this;
   };
 
@@ -630,22 +652,26 @@ export class CypressScriptBuilder extends ScriptBuilder {
   };
 
   fill = (selector: string, value: string, causesNavigation: boolean) => {
-    this.pushCodes(`cy.get('${selector}').type(${JSON.stringify(value)});`);
+    this.pushCodes(
+      `${this.cyGetFunction(selector)}.type(${JSON.stringify(value)});`
+    );
     return this;
   };
 
   type = (selector: string, value: string, causesNavigation: boolean) => {
-    this.pushCodes(`cy.get('${selector}').type(${JSON.stringify(value)});`);
+    this.pushCodes(
+      `${this.cyGetFunction(selector)}.type(${JSON.stringify(value)});`
+    );
     return this;
   };
 
   select = (selector: string, option: string, causesNavigation: boolean) => {
-    this.pushCodes(`cy.get('${selector}').select('${option}');`);
+    this.pushCodes(`${this.cyGetFunction(selector)}.select('${option}');`);
     return this;
   };
 
   keydown = (selector: string, key: string, causesNavigation: boolean) => {
-    this.pushCodes(`cy.get('${selector}').type('{${key}}');`);
+    this.pushCodes(`${this.cyGetFunction(selector)}.type('{${key}}');`);
     return this;
   };
 
@@ -677,10 +703,18 @@ export class CypressScriptBuilder extends ScriptBuilder {
     sourceX: number,
     sourceY: number,
     targetX: number,
-    targetY: number
+    targetY: number,
+    ctx: {
+      sourceSelector: string;
+      targetSelector: string;
+    }
   ) => {
     // TODO -> IMPLEMENT ME
-    this.pushCodes('');
+    this.pushCodes(
+      `${this.cyGetFunction(ctx.sourceSelector ?? '')}.drag('${
+        ctx.targetSelector
+      }')`
+    );
     return this;
   };
 

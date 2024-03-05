@@ -229,9 +229,11 @@ class Recorder {
     const lastAction = this._recording[this._recording.length - 1];
 
     if (event.type === 'dragstart') {
+      const base = buildBaseAction(event);
       this.appendToRecording({
-        ...buildBaseAction(event),
+        ...base,
         type: ActionType.DragAndDrop,
+        sourceSelector: base,
         sourceX: event.x,
         sourceY: event.y,
       });
@@ -239,7 +241,9 @@ class Recorder {
       event.type === 'drop' &&
       lastAction.type === ActionType.DragAndDrop
     ) {
+      const base = buildBaseAction(event);
       this.updateLastRecordedAction({
+        targetSelector: base,
         targetX: event.x,
         targetY: event.y,
       });
