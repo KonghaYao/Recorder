@@ -221,7 +221,7 @@ function attr(input: Element): Node[] {
         '[' +
         cssesc(attr.name, { isIdentifier: true }) +
         '="' +
-        cssesc(attr.value) +
+        attr.value +
         '"]',
       penalty: 0.5,
     })
