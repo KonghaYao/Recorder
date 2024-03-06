@@ -221,7 +221,7 @@ function attr(input: Element): Node[] {
         '[' +
         cssesc(attr.name, { isIdentifier: true }) +
         '="' +
-        attr.value +
+        cssesc(attr.value) +
         '"]',
       penalty: 0.5,
     })
@@ -388,7 +388,7 @@ function cssesc(string: string, opt: Partial<typeof defaultOptions> = {}) {
     let codePoint = character.charCodeAt(0);
     let value: string | undefined = void 0;
     // If it’s not a printable ASCII character…
-    if (codePoint < 0x20 || codePoint > 0x7e) {
+    if (codePoint < 0x20) {
       if (codePoint >= 0xd800 && codePoint <= 0xdbff && counter < length) {
         // It’s a high surrogate, and there is a next character.
         const extra = string.charCodeAt(counter++);

@@ -41,7 +41,6 @@ function buildBaseAction(
   overrideTarget?: HTMLElement
 ): BaseAction {
   const target = overrideTarget ?? (event.target as HTMLElement);
-
   return {
     isPassword:
       target instanceof HTMLInputElement &&
@@ -53,7 +52,11 @@ function buildBaseAction(
     timestamp: event.timeStamp,
     hasOnlyText: target.children.length === 0 && target.innerText.length > 0,
     value: undefined,
-    key: event.key,
+    key:
+      event.key ||
+      (event.altKey && 'Alt') ||
+      (event.metaKey && 'Control') ||
+      (event.ctrlKey && 'Control'),
   };
 }
 

@@ -636,11 +636,18 @@ export class CypressScriptBuilder extends ScriptBuilder {
   };
   // Cypress automatically detects and waits for the page to finish loading
   click = (selector: string, causesNavigation: boolean, action: BaseAction) => {
+    selector = selector
+      .replaceAll('\n', '\\n')
+      .replaceAll('"', '\\"')
+      .replaceAll("'", "\\'");
     const key = (action as KeydownAction).key;
     if (key === 'Control') {
       this.pushCodes(
         `${this.cyGetFunction(selector)}.should('contain', '${
-          action.selectors.text ?? ''
+          action.selectors.text
+            ?.replaceAll('\n', '\\n')
+            .replaceAll('"', '\\"')
+            .replaceAll("'", "\\'") ?? ''
         }');`
       );
       return this;
