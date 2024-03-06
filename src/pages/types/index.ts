@@ -67,7 +67,7 @@ export class BaseAction {
   hasOnlyText: boolean; // If the element only has text content inside (hint to use text selector)
 }
 
-class KeydownAction extends BaseAction {
+export class KeydownAction extends BaseAction {
   type: ActionType.Keydown;
   key: string;
 }

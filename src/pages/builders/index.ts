@@ -1,6 +1,6 @@
 import { getBestSelectorForAction } from './selector';
 
-import type { Action } from '../types';
+import type { Action, KeydownAction } from '../types';
 import {
   ActionType,
   BaseAction,
@@ -152,7 +152,11 @@ export abstract class ScriptBuilder {
     this.showComments = showComments;
   }
 
-  abstract click: (selector: string, causesNavigation: boolean) => this;
+  abstract click: (
+    selector: string,
+    causesNavigation: boolean,
+    action: BaseAction
+  ) => this;
 
   abstract hover: (selector: string, causesNavigation: boolean) => this;
 
@@ -224,7 +228,7 @@ export abstract class ScriptBuilder {
 
     switch (actionContext.getType()) {
       case ActionType.Click:
-        this.click(bestSelector as string, causesNavigation);
+        this.click(bestSelector as string, causesNavigation, action);
         break;
       case ActionType.Hover:
         this.hover(bestSelector as string, causesNavigation);
@@ -631,7 +635,19 @@ export class CypressScriptBuilder extends ScriptBuilder {
     return `cy.get('${selector}')`;
   };
   // Cypress automatically detects and waits for the page to finish loading
-  click = (selector: string, causesNavigation: boolean) => {
+  click = (selector: string, causesNavigation: boolean, action: BaseAction) => {
+    const key = (action as KeydownAction).key;
+    if (key === 'Control') {
+      this.pushCodes(
+        `${this.cyGetFunction(selector)}.should('contain', '${
+          action.selectors.text ?? ''
+        }');`
+      );
+      return this;
+    } else if (key === 'Alt') {
+      this.pushCodes(`${this.cyGetFunction(selector)}.should('be.disabled');`);
+      return this;
+    }
     this.pushCodes(`${this.cyGetFunction(selector)}.click();`);
     return this;
   };
@@ -671,6 +687,23 @@ export class CypressScriptBuilder extends ScriptBuilder {
   };
 
   keydown = (selector: string, key: string, causesNavigation: boolean) => {
+    switch (key) {
+      case 'ArrowDown':
+        key = 'downArrow';
+        break;
+      case 'ArrowUp':
+        key = 'upArrow';
+        break;
+      case 'ArrowLeft':
+        key = 'leftArrow';
+        break;
+      case 'ArrowRight':
+        key = 'rightArrow';
+        break;
+      case 'Enter':
+        key = 'enter';
+        break;
+    }
     this.pushCodes(`${this.cyGetFunction(selector)}.type('{${key}}');`);
     return this;
   };
