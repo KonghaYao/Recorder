@@ -7,8 +7,9 @@ var webpack = require('webpack'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
   TerserPlugin = require('terser-webpack-plugin');
 
+const BUILD_PATH = process.env.BUILD_PATH || 'build';
 const ASSET_PATH = process.env.ASSET_PATH || '/';
-const MANIFEST_VERSION = process.env.MANIFEST_VERSION;
+const MANIFEST_VERSION = process.env.MANIFEST_VERSION || '3';
 
 var alias = {
   'react-dom': '@hot-loader/react-dom',
@@ -53,7 +54,7 @@ var options = {
     notHotReload: ['contentScript' /*, 'devtools'*/],
   },
   output: {
-    path: path.resolve(__dirname, 'build'),
+    path: path.resolve(__dirname, BUILD_PATH),
     filename: '[name].bundle.js',
     publicPath: ASSET_PATH,
   },
