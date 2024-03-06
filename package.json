@@ -1,6 +1,6 @@
 {
-  "name": "deploysentinel-recorder",
-  "version": "0.7.1",
+  "name": "cypress-recorder",
+  "version": "0.7.3",
   "description": "A browser extension that generates Cypress, Playwright and Puppeteer scripts automatically from your browser interactions.",
   "license": "Apache-2.0",
   "scripts": {
@@ -74,6 +74,11 @@
     "webpack-cli": "^4.5.0",
     "webpack-dev-server": "^3.11.2"
   },
+  "files": [
+    "build",
+    "index.js"
+  ],
+  "main": "index.js",
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
   }

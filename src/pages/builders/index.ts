@@ -626,9 +626,9 @@ ${this.codes.join('')}
 export class CypressScriptBuilder extends ScriptBuilder {
   private cyGetFunction = (selector: string) => {
     if (selector.startsWith('text=')) {
-      return `cy.getByText('${selector.slice(5)}')`;
+      return `cy.contains('${selector.slice(5)}')`;
     }
-    return `cy.get('${selector}');`;
+    return `cy.get('${selector}')`;
   };
   // Cypress automatically detects and waits for the page to finish loading
   click = (selector: string, causesNavigation: boolean) => {
