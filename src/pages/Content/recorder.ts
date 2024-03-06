@@ -53,6 +53,7 @@ function buildBaseAction(
     timestamp: event.timeStamp,
     hasOnlyText: target.children.length === 0 && target.innerText.length > 0,
     value: undefined,
+    key: event.key,
   };
 }
 

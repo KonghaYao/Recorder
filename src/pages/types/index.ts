@@ -65,6 +65,7 @@ export class BaseAction {
   timestamp: number;
   isPassword: boolean;
   hasOnlyText: boolean; // If the element only has text content inside (hint to use text selector)
+  key?: string;
 }
 
 export class KeydownAction extends BaseAction {

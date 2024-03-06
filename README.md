@@ -94,6 +94,12 @@ Run E2E Tests: `yarn test`
 
 ---
 
+## fix webpack failure
+
+```sh
+export NODE_OPTIONS=--openssl-legacy-provider
+```
+
 ## Made with ❤️ by [DeploySentinel](https://deploysentinel.com)
 
 Use DeploySentinel to save hours of failed Cypress test debugging by using DOM,
