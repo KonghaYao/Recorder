@@ -636,25 +636,61 @@ export class CypressScriptBuilder extends ScriptBuilder {
   };
   // Cypress automatically detects and waits for the page to finish loading
   click = (selector: string, causesNavigation: boolean, action: BaseAction) => {
-    selector = selector
-      .replaceAll('\n', '\\n')
-      .replaceAll('"', '\\"')
-      .replaceAll("'", "\\'");
+    const textContentToString = (str: string) =>
+      str.replaceAll('\n', '\\n').replaceAll('"', '\\"').replaceAll("'", "\\'");
+    selector = textContentToString(selector);
+
     const key = (action as KeydownAction).key;
     if (key === 'Control') {
       // fix: input must use have.value
       const validStr = action.tagName === 'INPUT' ? 'have.value' : 'contain';
-      this.pushCodes(
-        `${this.cyGetFunction(selector)}.should('${validStr}', '${
-          action.selectors.text
-            ?.replaceAll('\n', '\\n')
-            .replaceAll('"', '\\"')
-            .replaceAll("'", "\\'") ?? ''
-        }');`
-      );
+      switch (action.button) {
+        case 1:
+          // Control MidClick: use hover mode
+          return this.hover(selector, causesNavigation);
+        case 2:
+          // Control RightClick: force equal text
+          this.pushCodes(
+            `${this.cyGetFunction(
+              selector
+            )}.should('have.value', '${textContentToString(
+              action.selectors.text ?? ''
+            )}');`
+          );
+          break;
+        default:
+          // Control Click: use text match
+          this.pushCodes(
+            `${this.cyGetFunction(
+              selector
+            )}.should('${validStr}', '${textContentToString(
+              action.selectors.text ?? ''
+            )}');`
+          );
+      }
       return this;
     } else if (key === 'Alt') {
-      this.pushCodes(`${this.cyGetFunction(selector)}.should('be.disabled');`);
+      switch (action.button) {
+        case 1:
+          // Alt MidClick: disabled check
+          this.pushCodes(
+            `${this.cyGetFunction(selector)}.should('be.disabled');`
+          );
+          break;
+        case 2:
+          // Alt MidClick: class string match
+          this.pushCodes(
+            `${this.cyGetFunction(selector)}.should('match', '${
+              action.class
+            }');`
+          );
+          break;
+        default:
+          // Alt Click: visible match
+          this.pushCodes(
+            `${this.cyGetFunction(selector)}.should('be.visible');`
+          );
+      }
       return this;
     }
     this.pushCodes(`${this.cyGetFunction(selector)}.click();`);
@@ -662,6 +698,7 @@ export class CypressScriptBuilder extends ScriptBuilder {
   };
 
   hover = (selector: string, causesNavigation: boolean) => {
+    // TODO this doesn't trigger
     this.pushCodes(`${this.cyGetFunction(selector)}.trigger('mouseover');`);
     return this;
   };
@@ -761,9 +798,7 @@ export class CypressScriptBuilder extends ScriptBuilder {
   };
 
   buildScript = () => {
-    return `it('Written with DeploySentinel Recorder', () => {${this.codes.join(
-      ''
-    )}});`;
+    return `it('Cypress Recorder', () => {${this.codes.join('')}});`;
   };
 }
 

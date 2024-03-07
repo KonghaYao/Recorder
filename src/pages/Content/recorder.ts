@@ -42,6 +42,7 @@ function buildBaseAction(
 ): BaseAction {
   const target = overrideTarget ?? (event.target as HTMLElement);
   const e = event as KeyboardEvent;
+
   return {
     isPassword:
       target instanceof HTMLInputElement &&
@@ -59,6 +60,8 @@ function buildBaseAction(
       (e.altKey && 'Alt') ||
       (e.metaKey && 'Control') ||
       (e.ctrlKey && 'Control'),
+    button: (event as PointerEvent).button,
+    class: [...target.classList].map((i) => '.' + i).join(''),
   };
 }
 
@@ -131,7 +134,7 @@ class Recorder {
         }
       });
 
-      window.addEventListener('click', this.onClick, true);
+      window.addEventListener('pointerdown', this.onClick, true);
       window.addEventListener('contextmenu', this.onContextMenu, true);
       window.addEventListener('dragstart', this.onDrag, true);
       window.addEventListener('drop', this.onDrag, true);
@@ -157,7 +160,7 @@ class Recorder {
   }
 
   deregister() {
-    window.removeEventListener('click', this.onClick, true);
+    window.removeEventListener('pointerdown', this.onClick, true);
     window.removeEventListener('contextmenu', this.onContextMenu, true);
     window.removeEventListener('dragstart', this.onDrag, true);
     window.removeEventListener('drop', this.onDrag, true);

@@ -66,6 +66,8 @@ export class BaseAction {
   isPassword: boolean;
   hasOnlyText: boolean; // If the element only has text content inside (hint to use text selector)
   key?: string;
+  button?: number;
+  class?: string;
 }
 
 export class KeydownAction extends BaseAction {
