@@ -701,7 +701,6 @@ export class CypressScriptBuilder extends ScriptBuilder {
   };
 
   hover = (selector: string, causesNavigation: boolean) => {
-    // TODO this doesn't trigger
     this.pushCodes(`${this.cyGetFunction(selector)}.trigger('mouseover');`);
     return this;
   };
@@ -768,7 +767,7 @@ export class CypressScriptBuilder extends ScriptBuilder {
     selector?: string
   ) => {
     this.pushCodes(
-      `${selector ? this.cyGetFunction(selector) : 'cy'}.scrollTo(${Math.floor(pageXOffset ?? 0)}, ${Math.floor(
+      `${selector && selector !== 'html' ? this.cyGetFunction(selector) : 'cy'}.scrollTo(${Math.floor(pageXOffset ?? 0)}, ${Math.floor(
         pageYOffset ?? 0
       )});`
     );

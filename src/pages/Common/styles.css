@@ -48,7 +48,9 @@
   border-radius: 5px;
   padding: 2px;
   background: linear-gradient(89.91deg, #8256d0 0.06%, #245ab2 99.9%);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
   -webkit-mask-composite: destination-out;
   mask-composite: exclude;
 }

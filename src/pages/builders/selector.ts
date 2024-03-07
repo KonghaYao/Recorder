@@ -111,6 +111,7 @@ export function getBestSelectorForAction(action: Action, library: ScriptType) {
   switch (action.type) {
     case ActionType.Click:
     case ActionType.Hover:
+    case ActionType.Wheel:
     case ActionType.DragAndDrop: {
       const selectors = action.selectors;
       // Only supported for playwright, less than 25 characters, and element only has text inside

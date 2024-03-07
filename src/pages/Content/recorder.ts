@@ -196,13 +196,28 @@ class Recorder {
         pageYOffset,
       });
     } else {
+      const parentHaveScrollBar = (
+        el: HTMLElement,
+        vertical = false
+      ): HTMLElement => {
+        // BUG some elements have less pixel offset cause bug
+        return el !== document.documentElement &&
+          el[vertical ? 'scrollWidth' : 'scrollHeight'] ===
+            el[vertical ? 'clientWidth' : 'clientHeight']
+          ? parentHaveScrollBar(el.parentElement!)
+          : el;
+      };
+      const el = parentHaveScrollBar(
+        event.target as HTMLElement,
+        event.deltaX > event.deltaY
+      );
       const action = {
-        ...buildBaseAction(event, event.target! as HTMLElement),
+        ...buildBaseAction(event, el),
         type: 'wheel',
         deltaX: Math.floor(event.deltaX),
         deltaY: Math.floor(event.deltaY),
-        pageXOffset,
-        pageYOffset,
+        pageXOffset: el.scrollLeft,
+        pageYOffset: el.scrollTop,
       };
       this.appendToRecording(action);
     }
