@@ -642,8 +642,10 @@ export class CypressScriptBuilder extends ScriptBuilder {
       .replaceAll("'", "\\'");
     const key = (action as KeydownAction).key;
     if (key === 'Control') {
+      // fix: input must use have.value
+      const validStr = action.tagName === 'INPUT' ? 'have.value' : 'contain';
       this.pushCodes(
-        `${this.cyGetFunction(selector)}.should('contain', '${
+        `${this.cyGetFunction(selector)}.should('${validStr}', '${
           action.selectors.text
             ?.replaceAll('\n', '\\n')
             .replaceAll('"', '\\"')
