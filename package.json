@@ -1,6 +1,6 @@
 {
   "name": "cypress-recorder",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "A browser extension that generates Cypress, Playwright and Puppeteer scripts automatically from your browser interactions.",
   "license": "Apache-2.0",
   "scripts": {
@@ -12,7 +12,8 @@
     "test": "jest --coverage",
     "prepare": "husky install"
   },
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
@@ -29,9 +30,7 @@
     "react-copy-to-clipboard": "^5.0.4",
     "react-dom": "^18.2.0",
     "react-hot-loader": "^4.13.0",
-    "react-syntax-highlighter": "^15.4.4"
-  },
-  "devDependencies": {
+    "react-syntax-highlighter": "^15.4.4",
     "@babel/core": "^7.12.17",
     "@babel/preset-env": "^7.12.17",
     "@babel/preset-react": "^7.12.13",

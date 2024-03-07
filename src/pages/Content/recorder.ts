@@ -197,6 +197,7 @@ class Recorder {
       });
     } else {
       const action = {
+        ...buildBaseAction(event, event.target! as HTMLElement),
         type: 'wheel',
         deltaX: Math.floor(event.deltaX),
         deltaY: Math.floor(event.deltaY),

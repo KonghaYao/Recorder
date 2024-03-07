@@ -192,7 +192,8 @@ export abstract class ScriptBuilder {
     deltaX: number,
     deltaY: number,
     pageXOffset?: number,
-    pageYOffset?: number
+    pageYOffset?: number,
+    selector?: string
   ) => this;
 
   abstract dragAndDrop: (
@@ -269,7 +270,8 @@ export abstract class ScriptBuilder {
           action.deltaX,
           action.deltaY,
           action.pageXOffset,
-          action.pageYOffset
+          action.pageYOffset,
+          bestSelector!
         );
         break;
       case ActionType.FullScreenshot:
@@ -750,6 +752,9 @@ export class CypressScriptBuilder extends ScriptBuilder {
       case 'Enter':
         key = 'enter';
         break;
+      case 'Escape':
+        key = 'esc';
+        break;
     }
     this.pushCodes(`${this.cyGetFunction(selector)}.type('{${key}}');`);
     return this;
@@ -759,10 +764,11 @@ export class CypressScriptBuilder extends ScriptBuilder {
     deltaX: number,
     deltaY: number,
     pageXOffset?: number,
-    pageYOffset?: number
+    pageYOffset?: number,
+    selector?: string
   ) => {
     this.pushCodes(
-      `cy.scrollTo(${Math.floor(pageXOffset ?? 0)}, ${Math.floor(
+      `${selector ? this.cyGetFunction(selector) : 'cy'}.scrollTo(${Math.floor(pageXOffset ?? 0)}, ${Math.floor(
         pageYOffset ?? 0
       )});`
     );
