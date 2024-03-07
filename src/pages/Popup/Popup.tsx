@@ -86,6 +86,7 @@ function LastStepPanel({
               onChange={(val) => setPreferredLibrary(val)}
               value={displayedScriptType}
             />
+            {/* @ts-ignore */}
             <CopyToClipboard
               text={genCode(actions, true, displayedScriptType)}
               onCopy={() => {
@@ -193,8 +194,8 @@ const Popup = () => {
     recordingTabId != null
       ? 'recording'
       : isShowingLastTest
-      ? 'lastTest'
-      : 'home';
+        ? 'lastTest'
+        : 'home';
 
   const isRecordingCurrentTab = currentTabId === recordingTabId;
 

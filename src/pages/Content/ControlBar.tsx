@@ -72,34 +72,34 @@ function RenderActionText({ action }: { action: Action }) {
             ScriptType.Playwright
           )}`
         : action.type === ActionType.Hover
-        ? `Hover over ${action.tagName.toLowerCase()} ${getBestSelectorForAction(
-            action,
-            ScriptType.Playwright
-          )}`
-        : action.type === ActionType.Input
-        ? `Fill "${
-            action.isPassword
-              ? '*'.repeat(action?.value?.length ?? 0)
-              : action.value
-          }" on ${action.tagName.toLowerCase()} ${getBestSelectorForAction(
-            action,
-            ScriptType.Playwright
-          )}`
-        : action.type === ActionType.Keydown
-        ? `Press ${action.key} on ${action.tagName.toLowerCase()}`
-        : action.type === ActionType.Load
-        ? `Load "${action.url}"`
-        : action.type === ActionType.Resize
-        ? `Resize window to ${action.width} x ${action.height}`
-        : action.type === ActionType.Wheel
-        ? `Scroll wheel by X:${action.deltaX}, Y:${action.deltaY}`
-        : action.type === ActionType.FullScreenshot
-        ? `Take full page screenshot`
-        : action.type === ActionType.AwaitText
-        ? `Wait for text "${action.text}"`
-        : action.type === ActionType.DragAndDrop
-        ? `Drag n Drop from (${action.sourceX}, ${action.sourceY}) to (${action.targetX}, ${action.targetY})`
-        : ''}
+          ? `Hover over ${action.tagName.toLowerCase()} ${getBestSelectorForAction(
+              action,
+              ScriptType.Playwright
+            )}`
+          : action.type === ActionType.Input
+            ? `Fill "${
+                action.isPassword
+                  ? '*'.repeat(action?.value?.length ?? 0)
+                  : action.value
+              }" on ${action.tagName.toLowerCase()} ${getBestSelectorForAction(
+                action,
+                ScriptType.Playwright
+              )}`
+            : action.type === ActionType.Keydown
+              ? `Press ${action.key} on ${action.tagName.toLowerCase()}`
+              : action.type === ActionType.Load
+                ? `Load "${action.url}"`
+                : action.type === ActionType.Resize
+                  ? `Resize window to ${action.width} x ${action.height}`
+                  : action.type === ActionType.Wheel
+                    ? `Scroll wheel by X:${action.deltaX}, Y:${action.deltaY}`
+                    : action.type === ActionType.FullScreenshot
+                      ? `Take full page screenshot`
+                      : action.type === ActionType.AwaitText
+                        ? `Wait for text "${action.text}"`
+                        : action.type === ActionType.DragAndDrop
+                          ? `Drag n Drop from (${action.sourceX}, ${action.sourceY}) to (${action.targetX}, ${action.targetY})`
+                          : ''}
     </>
   );
 }
@@ -297,7 +297,7 @@ export default function ControlBar({ onExit }: { onExit: () => void }) {
               <div className="d-flex justify-between" style={{ fontSize: 14 }}>
                 <div
                   className="text-grey"
-                  title="Control Click: use text match&#10;  Control MidClick: use hover mode&#10; Control RightClick: force equal text&#10; Alt Click: visible match &#10; Alt MidClick: disabled check &#10; Alt MidClick: class string match "
+                  title="Control Click: use text match &#10; Alt Click: visible match &#10; Control MidClick: force equal text  &#10; Alt RightClick: disabled check &#10; Alt MidClick: class string match"
                 >
                   Last Action
                 </div>
@@ -391,6 +391,8 @@ export default function ControlBar({ onExit }: { onExit: () => void }) {
                       value={displayedScriptType}
                       onChange={setPreferredLibrary}
                     />
+
+                    {/* @ts-ignore */}
                     <CopyToClipboard
                       text={genCode(actions, true, displayedScriptType)}
                       onCopy={() => {

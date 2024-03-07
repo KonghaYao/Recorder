@@ -646,10 +646,7 @@ export class CypressScriptBuilder extends ScriptBuilder {
       const validStr = action.tagName === 'INPUT' ? 'have.value' : 'contain';
       switch (action.button) {
         case 1:
-          // Control MidClick: use hover mode
-          return this.hover(selector, causesNavigation);
-        case 2:
-          // Control RightClick: force equal text
+          // Control MidClick: force equal text
           this.pushCodes(
             `${this.cyGetFunction(
               selector
@@ -658,6 +655,10 @@ export class CypressScriptBuilder extends ScriptBuilder {
             )}');`
           );
           break;
+        case 2:
+          // TODO This key can't be triggered
+          // Control RightClick: use hover mode
+          return this.hover(selector, causesNavigation);
         default:
           // Control Click: use text match
           this.pushCodes(
@@ -672,17 +673,17 @@ export class CypressScriptBuilder extends ScriptBuilder {
     } else if (key === 'Alt') {
       switch (action.button) {
         case 1:
-          // Alt MidClick: disabled check
-          this.pushCodes(
-            `${this.cyGetFunction(selector)}.should('be.disabled');`
-          );
-          break;
-        case 2:
           // Alt MidClick: class string match
           this.pushCodes(
             `${this.cyGetFunction(selector)}.should('match', '${
               action.class
             }');`
+          );
+          break;
+        case 2:
+          // Alt RightClick: disabled check
+          this.pushCodes(
+            `${this.cyGetFunction(selector)}.should('be.disabled');`
           );
           break;
         default:

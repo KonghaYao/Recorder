@@ -11,6 +11,8 @@ const BUILD_PATH = process.env.BUILD_PATH || 'build';
 const ASSET_PATH = process.env.ASSET_PATH || '/';
 const MANIFEST_VERSION = process.env.MANIFEST_VERSION || '3';
 
+console.log(path.resolve(__dirname, BUILD_PATH));
+
 var alias = {
   'react-dom': '@hot-loader/react-dom',
 };
@@ -56,7 +58,8 @@ var options = {
   output: {
     path: path.resolve(__dirname, BUILD_PATH),
     filename: '[name].bundle.js',
-    publicPath: ASSET_PATH,
+    publicPath: path.resolve(__dirname, ASSET_PATH),
+    clean: true,
   },
   module: {
     rules: [
@@ -125,10 +128,6 @@ var options = {
             );
           },
         },
-      ],
-    }),
-    new CopyWebpackPlugin({
-      patterns: [
         {
           from: 'src/assets/img',
           to: path.join(__dirname, 'build'),

@@ -138,7 +138,6 @@ class Recorder {
         }
       });
 
-      window.addEventListener('click', this.onClick, true);
       window.addEventListener('pointerdown', this.onClick, true);
       window.addEventListener('contextmenu', this.onContextMenu, true);
       window.addEventListener('dragstart', this.onDrag, true);
@@ -165,7 +164,6 @@ class Recorder {
   }
 
   deregister() {
-    window.removeEventListener('click', this.onClick, true);
     window.removeEventListener('pointerdown', this.onClick, true);
     window.removeEventListener('contextmenu', this.onContextMenu, true);
     window.removeEventListener('dragstart', this.onDrag, true);
