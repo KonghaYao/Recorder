@@ -42,12 +42,16 @@ function buildBaseAction(
 ): BaseAction {
   const target = overrideTarget ?? (event.target as HTMLElement);
   const e = event as KeyboardEvent;
-
+  let type = event.type as ActionType;
+  /* @ts-ignore fix pointerdown as mouse type */
+  if (['mouse', 'pointerdown'].includes(type)) {
+    type = ActionType.Click;
+  }
   return {
     isPassword:
       target instanceof HTMLInputElement &&
       target.type.toLowerCase() === 'password',
-    type: event.type as ActionType,
+    type,
     tagName: target.tagName as TagName,
     inputType: target instanceof HTMLInputElement ? target.type : undefined,
     selectors: genSelectors(target) ?? {},
@@ -206,7 +210,6 @@ class Recorder {
   };
 
   private onClick = (event: Event) => {
-    console.log(event);
     if (event.isTrusted === false) {
       // Ignore synthetic events
       return;
