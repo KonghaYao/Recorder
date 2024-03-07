@@ -53,7 +53,7 @@ function buildBaseAction(
     selectors: genSelectors(target) ?? {},
     timestamp: event.timeStamp,
     hasOnlyText: target.children.length === 0 && target.innerText.length > 0,
-    value: undefined,
+    value: (target as HTMLInputElement).value,
     /** @ts-ignore */
     key:
       e.key ||
@@ -134,6 +134,7 @@ class Recorder {
         }
       });
 
+      window.addEventListener('click', this.onClick, true);
       window.addEventListener('pointerdown', this.onClick, true);
       window.addEventListener('contextmenu', this.onContextMenu, true);
       window.addEventListener('dragstart', this.onDrag, true);
@@ -160,6 +161,7 @@ class Recorder {
   }
 
   deregister() {
+    window.removeEventListener('click', this.onClick, true);
     window.removeEventListener('pointerdown', this.onClick, true);
     window.removeEventListener('contextmenu', this.onContextMenu, true);
     window.removeEventListener('dragstart', this.onDrag, true);
@@ -204,6 +206,7 @@ class Recorder {
   };
 
   private onClick = (event: Event) => {
+    console.log(event);
     if (event.isTrusted === false) {
       // Ignore synthetic events
       return;

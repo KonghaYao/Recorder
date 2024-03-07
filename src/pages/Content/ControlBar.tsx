@@ -297,7 +297,7 @@ export default function ControlBar({ onExit }: { onExit: () => void }) {
               <div className="d-flex justify-between" style={{ fontSize: 14 }}>
                 <div
                   className="text-grey"
-                  title="Control Click: use text match\n  Control MidClick: use hover mode\n Control RightClick: force equal text\n Alt Click: visible match \n Alt MidClick: disabled check \n Alt MidClick: class string match "
+                  title="Control Click: use text match&#10;  Control MidClick: use hover mode&#10; Control RightClick: force equal text&#10; Alt Click: visible match &#10; Alt MidClick: disabled check &#10; Alt MidClick: class string match "
                 >
                   Last Action
                 </div>
