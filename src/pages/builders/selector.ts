@@ -94,11 +94,11 @@ export default function genSelectors(element: HTMLElement | null) {
   } catch (e) {}
 
   return {
-    id: idSelector,
+    id: null, // fix: random id cause unreachable selector
     generalSelector,
     attrSelector,
     testIdSelector,
-    text: element.innerText,
+    text: (element as HTMLInputElement).value || element.innerText,
     href,
     // Only try to pick an href selector if there is an href on the element
     hrefSelector,
