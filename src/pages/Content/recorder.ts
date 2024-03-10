@@ -196,16 +196,22 @@ class Recorder {
         pageYOffset,
       });
     } else {
+      const hasScrollBar = (el: HTMLElement, vertical = false) => {
+        return (
+          el[vertical ? 'scrollWidth' : 'scrollHeight'] -
+          el[vertical ? 'clientWidth' : 'clientHeight']
+        );
+      };
       const parentHaveScrollBar = (
         el: HTMLElement,
         vertical = false
       ): HTMLElement => {
-        // BUG some elements have less pixel offset cause bug
-        return el !== document.documentElement &&
-          el[vertical ? 'scrollWidth' : 'scrollHeight'] ===
-            el[vertical ? 'clientWidth' : 'clientHeight']
-          ? parentHaveScrollBar(el.parentElement!)
-          : el;
+        if (el === document.documentElement) return el;
+        if (hasScrollBar(el, vertical)) console.log(hasScrollBar(el, vertical));
+        return hasScrollBar(el, vertical) > 10 &&
+          !['hidden', 'visible', 'clip'].includes(getComputedStyle(el).overflow)
+          ? el
+          : parentHaveScrollBar(el.parentElement!);
       };
       const el = parentHaveScrollBar(
         event.target as HTMLElement,
