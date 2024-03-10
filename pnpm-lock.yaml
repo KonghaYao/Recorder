@@ -8423,10 +8423,10 @@ packages:
       mimic-fn: 4.0.0
     dev: true
 
-  /open@10.0.4:
+  /open@10.1.0:
     resolution:
       {
-        integrity: sha512-oujJ/FFr7ra6/7gJuQ4ZJJ8Gf2VHM0J3J/W7IvH++zaqEzacWVxzK++NiVY5NLHTTj7u/jNH5H3Ei9biL31Lng==,
+        integrity: sha512-mnkeQ1qP5Ue2wd+aivTD3NHd/lZ96Lu0jgf0pwktLPtx6cTZiH7tyeGRRHs0zX0rbrahXPnXlUnbeXyaBBuIaw==,
       }
     engines: { node: '>=18' }
     dependencies:
@@ -10928,7 +10928,7 @@ packages:
       http-proxy-middleware: 2.0.6(@types/express@4.17.21)
       ipaddr.js: 2.1.0
       launch-editor: 2.6.1
-      open: 10.0.4
+      open: 10.1.0
       p-retry: 6.2.0
       rimraf: 5.0.5
       schema-utils: 4.2.0
