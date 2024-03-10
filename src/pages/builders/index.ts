@@ -158,7 +158,11 @@ export abstract class ScriptBuilder {
     action: BaseAction
   ) => this;
 
-  abstract hover: (selector: string, causesNavigation: boolean) => this;
+  abstract hover: (
+    selector: string,
+    causesNavigation: boolean,
+    action: BaseAction
+  ) => this;
 
   abstract load: (url: string) => this;
 
@@ -167,25 +171,29 @@ export abstract class ScriptBuilder {
   abstract fill: (
     selector: string,
     value: string,
-    causesNavigation: boolean
+    causesNavigation: boolean,
+    action: BaseAction
   ) => this;
 
   abstract type: (
     selector: string,
     value: string,
-    causesNavigation: boolean
+    causesNavigation: boolean,
+    action: BaseAction
   ) => this;
 
   abstract keydown: (
     selector: string,
     key: string,
-    causesNavigation: boolean
+    causesNavigation: boolean,
+    action: BaseAction
   ) => this;
 
   abstract select: (
     selector: string,
     key: string,
-    causesNavigation: boolean
+    causesNavigation: boolean,
+    action: BaseAction
   ) => this;
 
   abstract wheel: (
@@ -193,7 +201,8 @@ export abstract class ScriptBuilder {
     deltaY: number,
     pageXOffset?: number,
     pageYOffset?: number,
-    selector?: string
+    selector?: string,
+    action?: BaseAction
   ) => this;
 
   abstract dragAndDrop: (
@@ -204,7 +213,8 @@ export abstract class ScriptBuilder {
     ctx: {
       sourceSelector: string;
       targetSelector: string;
-    }
+    },
+    action: BaseAction
   ) => this;
 
   abstract fullScreenshot: () => this;
@@ -232,18 +242,24 @@ export abstract class ScriptBuilder {
         this.click(bestSelector as string, causesNavigation, action);
         break;
       case ActionType.Hover:
-        this.hover(bestSelector as string, causesNavigation);
+        this.hover(bestSelector as string, causesNavigation, action);
         break;
       case ActionType.Keydown:
         this.keydown(
           bestSelector as string,
           action.key ?? '',
-          causesNavigation
+          causesNavigation,
+          action
         );
         break;
       case ActionType.Input: {
         if (tagName === TagName.Select) {
-          this.select(bestSelector as string, value ?? '', causesNavigation);
+          this.select(
+            bestSelector as string,
+            value ?? '',
+            causesNavigation,
+            action
+          );
         } else if (
           // If the input is "fillable" or a text area
           tagName === TagName.Input &&
@@ -251,11 +267,26 @@ export abstract class ScriptBuilder {
           FILLABLE_INPUT_TYPES.includes(inputType)
         ) {
           // Do more actionability checks
-          this.fill(bestSelector as string, value ?? '', causesNavigation);
+          this.fill(
+            bestSelector as string,
+            value ?? '',
+            causesNavigation,
+            action
+          );
         } else if (tagName === TagName.TextArea) {
-          this.fill(bestSelector as string, value ?? '', causesNavigation);
+          this.fill(
+            bestSelector as string,
+            value ?? '',
+            causesNavigation,
+            action
+          );
         } else {
-          this.type(bestSelector as string, value ?? '', causesNavigation);
+          this.type(
+            bestSelector as string,
+            value ?? '',
+            causesNavigation,
+            action
+          );
         }
         break;
       }
@@ -297,7 +328,8 @@ export abstract class ScriptBuilder {
                 action.sourceSelector,
                 actionContext.scriptType
               ) ?? '',
-          }
+          },
+          action
         );
         break;
       default:
@@ -630,9 +662,9 @@ ${this.codes.join('')}
 }
 
 export class CypressScriptBuilder extends ScriptBuilder {
-  private cyGetFunction = (selector: string) => {
+  private cyGetFunction = (selector: string, action: BaseAction) => {
     if (selector.startsWith('text=')) {
-      return `cy.contains('${selector.slice(5)}')`;
+      return `cy.get('${action.selectors.generalSelector}').filter(':visible').filter(':contains("${selector.slice(5)}")')`;
     }
     return `cy.get('${selector}')`;
   };
@@ -651,7 +683,8 @@ export class CypressScriptBuilder extends ScriptBuilder {
           // Control MidClick: force equal text
           this.pushCodes(
             `${this.cyGetFunction(
-              selector
+              selector,
+              action
             )}.should('have.value', '${textContentToString(
               action.selectors.text ?? ''
             )}');`
@@ -660,12 +693,13 @@ export class CypressScriptBuilder extends ScriptBuilder {
         case 2:
           // TODO This key can't be triggered
           // Control RightClick: use hover mode
-          return this.hover(selector, causesNavigation);
+          return this.hover(selector, causesNavigation, action);
         default:
           // Control Click: use text match
           this.pushCodes(
             `${this.cyGetFunction(
-              selector
+              selector,
+              action
             )}.should('${validStr}', '${textContentToString(
               action.selectors.text ?? ''
             )}');`
@@ -677,7 +711,7 @@ export class CypressScriptBuilder extends ScriptBuilder {
         case 1:
           // Alt MidClick: class string match
           this.pushCodes(
-            `${this.cyGetFunction(selector)}.should('match', '${
+            `${this.cyGetFunction(selector, action)}.should('match', '${
               action.class
             }');`
           );
@@ -685,23 +719,25 @@ export class CypressScriptBuilder extends ScriptBuilder {
         case 2:
           // Alt RightClick: disabled check
           this.pushCodes(
-            `${this.cyGetFunction(selector)}.should('be.disabled');`
+            `${this.cyGetFunction(selector, action)}.should('be.disabled');`
           );
           break;
         default:
           // Alt Click: visible match
           this.pushCodes(
-            `${this.cyGetFunction(selector)}.should('be.visible');`
+            `${this.cyGetFunction(selector, action)}.should('be.visible');`
           );
       }
       return this;
     }
-    this.pushCodes(`${this.cyGetFunction(selector)}.click();`);
+    this.pushCodes(`${this.cyGetFunction(selector, action)}.click();`);
     return this;
   };
 
-  hover = (selector: string, causesNavigation: boolean) => {
-    this.pushCodes(`${this.cyGetFunction(selector)}.trigger('mouseover');`);
+  hover = (selector: string, causesNavigation: boolean, action: BaseAction) => {
+    this.pushCodes(
+      `${this.cyGetFunction(selector, action)}.trigger('mouseover');`
+    );
     return this;
   };
 
@@ -715,26 +751,48 @@ export class CypressScriptBuilder extends ScriptBuilder {
     return this;
   };
 
-  fill = (selector: string, value: string, causesNavigation: boolean) => {
+  fill = (
+    selector: string,
+    value: string,
+    causesNavigation: boolean,
+    action: BaseAction
+  ) => {
     this.pushCodes(
-      `${this.cyGetFunction(selector)}.type(${JSON.stringify(value)});`
+      `${this.cyGetFunction(selector, action)}.type(${JSON.stringify(value)});`
     );
     return this;
   };
 
-  type = (selector: string, value: string, causesNavigation: boolean) => {
+  type = (
+    selector: string,
+    value: string,
+    causesNavigation: boolean,
+    action: BaseAction
+  ) => {
     this.pushCodes(
-      `${this.cyGetFunction(selector)}.type(${JSON.stringify(value)});`
+      `${this.cyGetFunction(selector, action)}.type(${JSON.stringify(value)});`
     );
     return this;
   };
 
-  select = (selector: string, option: string, causesNavigation: boolean) => {
-    this.pushCodes(`${this.cyGetFunction(selector)}.select('${option}');`);
+  select = (
+    selector: string,
+    option: string,
+    causesNavigation: boolean,
+    action: BaseAction
+  ) => {
+    this.pushCodes(
+      `${this.cyGetFunction(selector, action)}.select('${option}');`
+    );
     return this;
   };
 
-  keydown = (selector: string, key: string, causesNavigation: boolean) => {
+  keydown = (
+    selector: string,
+    key: string,
+    causesNavigation: boolean,
+    action: BaseAction
+  ) => {
     switch (key) {
       case 'ArrowDown':
         key = 'downArrow';
@@ -755,7 +813,7 @@ export class CypressScriptBuilder extends ScriptBuilder {
         key = 'esc';
         break;
     }
-    this.pushCodes(`${this.cyGetFunction(selector)}.type('{${key}}');`);
+    this.pushCodes(`${this.cyGetFunction(selector, action)}.type('{${key}}');`);
     return this;
   };
 
@@ -764,10 +822,11 @@ export class CypressScriptBuilder extends ScriptBuilder {
     deltaY: number,
     pageXOffset?: number,
     pageYOffset?: number,
-    selector?: string
+    selector?: string,
+    action?: BaseAction
   ) => {
     this.pushCodes(
-      `${selector && selector !== 'html' ? this.cyGetFunction(selector) : 'cy'}.scrollTo(${Math.floor(pageXOffset ?? 0)}, ${Math.floor(
+      `${selector && selector !== 'html' ? this.cyGetFunction(selector, action!) : 'cy'}.scrollTo(${Math.floor(pageXOffset ?? 0)}, ${Math.floor(
         pageYOffset ?? 0
       )});`
     );
@@ -792,11 +851,12 @@ export class CypressScriptBuilder extends ScriptBuilder {
     ctx: {
       sourceSelector: string;
       targetSelector: string;
-    }
+    },
+    action: BaseAction
   ) => {
     // TODO -> IMPLEMENT ME
     this.pushCodes(
-      `${this.cyGetFunction(ctx.sourceSelector ?? '')}.drag('${
+      `${this.cyGetFunction(ctx.sourceSelector ?? '', action)}.drag('${
         ctx.targetSelector
       }')`
     );
