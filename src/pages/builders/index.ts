@@ -685,7 +685,7 @@ export class CypressScriptBuilder extends ScriptBuilder {
             `${this.cyGetFunction(
               selector,
               action
-            )}.should('have.value', '${textContentToString(
+            )}.should('be.visible').should('have.value', '${textContentToString(
               action.selectors.text ?? ''
             )}');`
           );
@@ -700,7 +700,7 @@ export class CypressScriptBuilder extends ScriptBuilder {
             `${this.cyGetFunction(
               selector,
               action
-            )}.should('${validStr}', '${textContentToString(
+            )}.should('be.visible').should('${validStr}', '${textContentToString(
               action.selectors.text ?? ''
             )}');`
           );

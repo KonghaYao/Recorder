@@ -71,6 +71,9 @@ devDependencies:
   cypress:
     specifier: ^13.6.6
     version: 13.6.6
+  cypress-real-events:
+    specifier: ^1.12.0
+    version: 1.12.0(cypress@13.6.6)
   eslint:
     specifier: ^8.57.0
     version: 8.57.0
@@ -4630,6 +4633,19 @@ packages:
       {
         integrity: sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==,
       }
+    dev: true
+
+  /cypress-real-events@1.12.0(cypress@13.6.6):
+    resolution:
+      {
+        integrity: sha512-oiy+4kGKkzc2PT36k3GGQqkGxNiVypheWjMtfyi89iIk6bYmTzeqxapaLHS3pnhZOX1IEbTDUVxh8T4Nhs1tyQ==,
+      }
+    peerDependencies:
+      cypress:
+        ^4.x || ^5.x || ^6.x || ^7.x || ^8.x || ^9.x || ^10.x || ^11.x || ^12.x
+        || ^13.x
+    dependencies:
+      cypress: 13.6.6
     dev: true
 
   /cypress@13.6.6:

@@ -93,8 +93,8 @@ function bottomUpSearch(
   let i = 0;
 
   while (current && current !== config.root.parentElement) {
-    let level: Node[] = maybe(id(current)) ||
-      maybe(...attr(current)) ||
+    // fix: don't use ids for selector
+    let level: Node[] = maybe(...attr(current)) ||
       maybe(...classNames(current)) ||
       maybe(tagName(current)) || [any()];
 
