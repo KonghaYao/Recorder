@@ -230,7 +230,7 @@ function attr(input: Element): Node[] {
 
 function classNames(input: Element): Node[] {
   const names = Array.from(input.classList)
-    .filter((i) => i.includes('hover')) // fix many element has hover class cause error
+    .filter((i) => !i.includes('hover')) // fix many element has hover class cause error
     .filter(config.className);
 
   return names.map(
