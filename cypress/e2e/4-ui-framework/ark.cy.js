@@ -64,7 +64,7 @@ context('Actions', () => {
       .should('have.value', '3');
 
     // Click on <input> [placeholder="0"]:nth-child(4)
-    cy.get('[placeholder="0"]:nth-child(4)')
+    cy.get('[aria-label="pin code 4 of 4"]')
       .should('be.visible')
       .should('have.value', '7');
   });
