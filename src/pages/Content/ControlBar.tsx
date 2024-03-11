@@ -178,7 +178,7 @@ export default function ControlBar({ onExit }: { onExit: () => void }) {
         setHoveredElement(element || null);
         setHoveredElementSelectors(genSelectors(element));
       }
-    }, 100);
+    }, 300);
 
     document.addEventListener('mousemove', handleMouseMoveRef.current, true);
 

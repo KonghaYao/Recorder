@@ -1,8 +1,12 @@
 /// <reference types="cypress" />
 
 context('Actions', () => {
-  it.only('Dialog: hover class error check', () => {
+  it('Transfer: scroll check', () => {
     cy.visit('https://element.eleme.cn/2.0/#/zh-CN/component/transfer');
+
+    cy.wait(100);
+    cy.get('.page-component__scroll > .el-scrollbar__wrap').scrollTo(0, 0);
+
     // Click on <span> "取消"
     cy.get('.el-button--small:nth-child(1) > span')
       .filter(':visible')
@@ -31,8 +35,10 @@ context('Actions', () => {
       .filter(':contains("备选项 14")')
       .click();
 
-    // Click on <i> .demo-block:nth-child(3) .el-icon-arrow-right
-    cy.get('.demo-block:nth-child(3) .el-icon-arrow-right').click();
+    // Click on <button> .demo-block:nth-child(3) .el-button:nth-child(2)
+    cy.get('.demo-block:nth-child(3) .el-button:nth-child(2)').click();
+
+    cy.get('.page-component__scroll > .el-scrollbar__wrap').scrollTo(0, 0);
 
     // Click on <span> "备选项 14"
     cy.get(

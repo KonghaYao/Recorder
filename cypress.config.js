@@ -9,4 +9,6 @@ module.exports = defineConfig({
   },
   viewportWidth: 1280, // 浏览器窗口宽度
   viewportHeight: 720, // 浏览器窗口高度
+  watchForFileChanges: false,
+  scrollBehavior: 'center',
 });
