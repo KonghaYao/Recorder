@@ -689,11 +689,7 @@ export class CypressScriptBuilder extends ScriptBuilder {
               action.selectors.text ?? ''
             )}');`
           );
-          break;
-        case 2:
-          // TODO This key can't be triggered
-          // Control RightClick: use hover mode
-          return this.hover(selector, causesNavigation, action);
+          return this;
         default:
           // Control Click: use text match
           this.pushCodes(
@@ -704,31 +700,17 @@ export class CypressScriptBuilder extends ScriptBuilder {
               action.selectors.text ?? ''
             )}');`
           );
+          return this;
       }
-      return this;
     } else if (key === 'Alt') {
       switch (action.button) {
-        case 1:
-          // Alt MidClick: class string match
-          this.pushCodes(
-            `${this.cyGetFunction(selector, action)}.should('match', '${
-              action.class
-            }');`
-          );
-          break;
-        case 2:
+        default:
           // Alt RightClick: disabled check
           this.pushCodes(
             `${this.cyGetFunction(selector, action)}.should('be.disabled');`
           );
-          break;
-        default:
-          // Alt Click: visible match
-          this.pushCodes(
-            `${this.cyGetFunction(selector, action)}.should('be.visible');`
-          );
+          return this;
       }
-      return this;
     }
     this.pushCodes(`${this.cyGetFunction(selector, action)}.click();`);
     return this;

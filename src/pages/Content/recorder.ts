@@ -355,8 +355,13 @@ class Recorder {
     if (this.checkAndSetDuplicateEventHandle(event)) {
       return;
     }
-
     const target = event.target as HTMLInputElement;
+
+    // input checkbox can't be record as input event
+    if (['checkbox', 'radio'].includes(target.type)) {
+      return;
+    }
+
     const selectors = genSelectors(target);
     const lastAction = this._recording[this._recording.length - 1];
     // If the last event was also an input and for the same element, update the last event with the latest input

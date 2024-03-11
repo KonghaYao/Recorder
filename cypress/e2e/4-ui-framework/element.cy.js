@@ -1,7 +1,54 @@
 /// <reference types="cypress" />
 
 context('Actions', () => {
-  it('hover class error check', () => {
+  it.only('Dialog: hover class error check', () => {
+    cy.visit('https://element.eleme.cn/2.0/#/zh-CN/component/transfer');
+    // Click on <span> "取消"
+    cy.get('.el-button--small:nth-child(1) > span')
+      .filter(':visible')
+      .filter(':contains("取消")')
+      .click();
+
+    cy.wait(400);
+    // Scroll wheel by X:0, Y:0
+    cy.get(
+      '.demo-block:nth-child(3) .el-transfer-panel:nth-child(1) [aria-label="checkbox-group"]'
+    ).scrollTo(0, 156);
+
+    // Click on <span> "备选项 15"
+    cy.get(
+      '.demo-block:nth-child(3) .el-checkbox:nth-child(13) > .el-checkbox__label > span'
+    )
+      .filter(':visible')
+      .filter(':contains("备选项 15")')
+      .click();
+
+    // Click on <span> "备选项 14"
+    cy.get(
+      '.demo-block:nth-child(3) .el-checkbox:nth-child(12) > .el-checkbox__label > span'
+    )
+      .filter(':visible')
+      .filter(':contains("备选项 14")')
+      .click();
+
+    // Click on <i> .demo-block:nth-child(3) .el-icon-arrow-right
+    cy.get('.demo-block:nth-child(3) .el-icon-arrow-right').click();
+
+    // Click on <span> "备选项 14"
+    cy.get(
+      '.el-transfer-panel:nth-child(3) .el-checkbox:nth-child(3) > .el-checkbox__label > span'
+    )
+      .should('be.visible')
+      .should('contain', '备选项 14');
+
+    // Click on <span> "备选项 15"
+    cy.get(
+      '.el-transfer-panel:nth-child(3) .el-checkbox:nth-child(4) > .el-checkbox__label > span'
+    )
+      .should('be.visible')
+      .should('contain', '备选项 15');
+  });
+  it('Dialog: hover class error check', () => {
     cy.visit('https://element.eleme.cn/2.0/#/zh-CN/component/dialog');
     // Click on <span> "取消"
     cy.get('.el-button--small:nth-child(1) > span')
@@ -21,7 +68,7 @@ context('Actions', () => {
       .filter(':contains("确 定")')
       .click();
   });
-  it('text content selector check', () => {
+  it('Popover: text content selector check', () => {
     cy.visit('https://element.eleme.cn/2.0/#/zh-CN/component/popover');
     // Click on <span> "取消"
     cy.get('div:nth-child(3) > button:nth-child(1) > span')
